@@ -1,0 +1,26 @@
+<ion-content padding>
+  <form [formGroup]="recipeSearchForm">
+    <ion-row>
+      <ion-input placeholder="Pasta, Chicken, Vegetarian..." formControlName="recipeSearch"
+        (keyup.enter)="onSubmitForm()"></ion-input>
+    </ion-row>
+  </form>
+  <ion-row class="spinner-container" justify-content>
+    <ion-spinner *ngIf="recipesLoading" name="dots"></ion-spinner>
+  </ion-row>
+  <ion-list>
+    <ion-item *ngFor="let recipe of recipes; let i = index">
+      <button *ngIf="!recipe.isFavorite" (click)="onClickFavorite(recipe)" ion-button clear item-end>
+        <ion-icon name="star-outline"></ion-icon>
+      </button>
+      <button *ngIf="recipe.isFavorite" (click)="onClickFavorite(recipe)" ion-button clear item-end>
+        <ion-icon name="star"></ion-icon>
+      </button>
+      <ion-label (click)="onClickRecipe(i)">{{ recipe.recipe.label }}</ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

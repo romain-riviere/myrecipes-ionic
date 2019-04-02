@@ -1,5 +1,7 @@
 {
   "name": "MyRecipes",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "ionic-angular"
 }

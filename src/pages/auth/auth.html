@@ -1,0 +1,29 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>
+            {{ mode ? 'Register' : 'Login' }}
+        </ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content>
+    <form [formGroup]="authForm">
+        <ion-list>
+            <ion-item>
+                <ion-label floating>E-mail address</ion-label>
+                <ion-input type="email" formControlName="email"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label floating>Password</ion-label>
+                <ion-input type="password" formControlName="password"></ion-input>
+            </ion-item>
+        </ion-list>
+        <button ion-button full (click)="onSubmitForm()">Submit</button>
+    </form>
+
+    <span ion-text color="danger">{{ errorMessage }}</span>
+
+
+    <button *ngIf="mode" ion-button full (click)="onChangeMode()">Login</button>
+    <button *ngIf="!mode" ion-button full (click)="onChangeMode()">Register</button>
+</ion-content>
