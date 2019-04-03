@@ -4,6 +4,8 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import * as firebase from 'firebase';
 import { HomePage } from '../pages/home/home';
+import { FIREBASE_CONFIG } from '../config/firebase.config'
+
 @Component({
   templateUrl: 'app.html'
 })
@@ -12,14 +14,7 @@ export class MyApp {
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
 
-    let config = {
-      apiKey: "AIzaSyBeL-7001MryljXushJt-9QbL7y6oqz5kY",
-      authDomain: "myrecipes-a8ab4.firebaseapp.com",
-      databaseURL: "https://myrecipes-a8ab4.firebaseio.com",
-      projectId: "myrecipes-a8ab4",
-      storageBucket: "myrecipes-a8ab4.appspot.com",
-      messagingSenderId: "553024915467"
-    };
+    let config = FIREBASE_CONFIG;
     firebase.initializeApp(config);
 
     platform.ready().then(() => {
