@@ -4,10 +4,4 @@
     <ion-input placeholder="Pasta, Chicken, Vegetarian..." formControlName="recipeSearch"
       (keyup.enter)="onSubmitForm()"></ion-input>
   </form>
-  <button *ngIf="!authService.isAuth" ion-button (click)="onGoToAuth()">
-    Login
-  </button>
-  <button *ngIf="authService.isAuth" ion-button (click)="onDisconnect()">
-    Disconnect
-  </button>
 </ion-content>

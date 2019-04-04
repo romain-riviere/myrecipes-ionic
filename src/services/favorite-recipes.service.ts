@@ -50,7 +50,7 @@ export class FavoriteRecipesService {
 
     addFavoriteRecipe(recipe: any) {
         var favoriteRecipe = {
-            id: recipe.recipe.uri,
+            uri: recipe.recipe.uri,
             label: recipe.recipe.label
         }
         this.favoriteRecipes.push(favoriteRecipe);
@@ -58,12 +58,10 @@ export class FavoriteRecipesService {
         this.saveFavoriteRecipes();
     }
 
-    deleteFavoriteRecipe(recipe: any) {
-        var favoriteRecipe = {
-            id: recipe.recipe.uri,
-            label: recipe.recipe.label
-        }
-        const indexToRemove = this.favoriteRecipes.indexOf(favoriteRecipe);
+    deleteFavoriteRecipe(recipeToDelete: any) {
+        const indexToRemove = this.favoriteRecipes.findIndex((recipe) => {
+            return recipe.uri === recipeToDelete.recipe.uri
+        })
         this.favoriteRecipes.splice(indexToRemove, 1);
         this.emitFavoriteRecipes();
         this.saveFavoriteRecipes();

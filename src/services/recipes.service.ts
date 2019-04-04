@@ -32,7 +32,24 @@ export class RecipesService {
         this.recipes$.next(this.recipes);
     }
 
+    getRecipeFromUri(uri: string) {
+        return new Promise((resolve, reject) => {
+            this.http
+                .get(EDAMAM_CONFIG.baseUrl + 'search?r=' + encodeURIComponent(uri) + '&app_id=' + EDAMAM_CONFIG.app_id + '&app_key=' + EDAMAM_CONFIG.apiKey)
+                .subscribe(
+                    (data: any) => {
+                        resolve(data[0]);
+                    },
+                    (error) => {
+                        reject(error);
+                    }
+                )
+        })
+    }
+
     getRecipes(recipeSearch: string) {
+        this.recipes = [];
+        this.emitRecipes();
         return new Promise((resolve, reject) => {
             this.http
                 .get(EDAMAM_CONFIG.baseUrl + 'search?q=' + recipeSearch + '&app_id=' + EDAMAM_CONFIG.app_id + '&app_key=' + EDAMAM_CONFIG.apiKey + '&to=' + 20)
@@ -70,7 +87,11 @@ export class RecipesService {
                         reject(error);
                     }
                 );
-        });
+        }).catch(
+            (error) => {
+                console.error(error);
+            }
+        );
     }
 
     updateFavorites() {
@@ -80,7 +101,7 @@ export class RecipesService {
                     (recipe) => {
                         const match = this.favoriteRecipes.find(
                             (favRecipe) => {
-                                return recipe.recipe.uri === favRecipe.id
+                                return recipe.recipe.uri === favRecipe.uri
                             }
                         )
                         if (match !== undefined) {

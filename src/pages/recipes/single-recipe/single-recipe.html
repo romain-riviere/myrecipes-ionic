@@ -1,8 +1,37 @@
 <ion-header>
     <ion-navbar>
+        <ion-title>Your recipe</ion-title>
+        <ion-buttons right>
+            <button *ngIf="recipe.isFavorite" ion-button icon-only (click)="onToggleFavorite()">
+                <ion-icon name="star"></ion-icon>
+            </button>
+            <button *ngIf="!recipe.isFavorite" ion-button icon-only (click)="onToggleFavorite()">
+                <ion-icon name="star-outline"></ion-icon>
+            </button>
+        </ion-buttons>
     </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-    <h1>{{ recipe.label }}</h1>
+    <ion-row>
+        <h2>{{ recipe.recipe.label }}</h2>
+    </ion-row>
+    <ion-row class="badge-container" justify-content-center>
+        <div *ngFor="let dietLabel of recipe.recipe.dietLabels">
+            <ion-badge class="badge" color="primary">{{dietLabel}}</ion-badge>
+        </div>
+    </ion-row>
+    <ion-row class="badge-container" justify-content-center>
+        <div *ngFor="let healthLabel of recipe.recipe.healthLabels">
+            <ion-badge class="badge" color="secondary">{{healthLabel}}</ion-badge>
+        </div>
+    </ion-row>
+    <ion-row class="badge-container" justify-content-center>
+        <div *ngFor="let caution of recipe.recipe.cautions">
+            <ion-badge class="badge" color="danger">{{caution}}</ion-badge>
+        </div>
+    </ion-row>
+    <ion-row (click)="openUrl(recipe.recipe.url)">
+        Get the instructions from {{ recipe.recipe.source }}
+    </ion-row>
 </ion-content>

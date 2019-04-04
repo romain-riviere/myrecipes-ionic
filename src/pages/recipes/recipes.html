@@ -1,26 +1,43 @@
+<ion-header>
+  <ion-navbar>
+    <ion-buttons left>
+      <button ion-button icon-only (click)="onToggleMenu()">
+        <ion-icon name="menu"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title>Recipes</ion-title>
+
+    <ion-buttons right>
+      <button ion-button icon-only (click)="onToggleSearchBar()" [disabled]="showSearchBar">
+        <ion-icon name="search"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+  <ion-searchbar #searchbar [ngClass]="{'searchBarVisible':showSearchBar, 'searchBarHidden':!showSearchBar}"
+    [(ngModel)]="recipeSearch" (search)="onSubmitSearch()" autocomplete=true></ion-searchbar>
+</ion-header>
+
 <ion-content padding>
-  <form [formGroup]="recipeSearchForm">
-    <ion-row>
-      <ion-input placeholder="Pasta, Chicken, Vegetarian..." formControlName="recipeSearch"
-        (keyup.enter)="onSubmitForm()"></ion-input>
-    </ion-row>
-  </form>
-  <ion-row class="spinner-container" justify-content>
-    <ion-spinner *ngIf="recipesLoading" name="dots"></ion-spinner>
+  <ion-row class="spinner-container">
+    <ion-spinner *ngIf="recipesLoading" name="bubbles"></ion-spinner>
   </ion-row>
-  <ion-list>
-    <ion-item *ngFor="let recipe of recipes; let i = index">
-      <button *ngIf="!recipe.isFavorite" (click)="onClickFavorite(recipe)" ion-button clear item-end>
-        <ion-icon name="star-outline"></ion-icon>
-      </button>
-      <button *ngIf="recipe.isFavorite" (click)="onClickFavorite(recipe)" ion-button clear item-end>
-        <ion-icon name="star"></ion-icon>
-      </button>
-      <ion-label (click)="onClickRecipe(i)">{{ recipe.recipe.label }}</ion-label>
-    </ion-item>
-  </ion-list>
+  <ion-row class="recipe" *ngFor="let recipe of recipes; let i = index" (click)="onClickRecipe(i)" nowrap>
+    <ion-col col-auto>
+      <img src="{{recipe.recipe.image}}" alt="recipeImage" />
+    </ion-col>
+    <ion-col class="text">
+      <ion-row>{{ recipe.recipe.label }}</ion-row>
+      <ion-row>
+        <ion-badge class="badge" color="primary">{{ recipe.recipe.ingredients.length }} ingredients</ion-badge>
+        <ion-badge class="badge" color="primary">{{ recipe.recipe.yield }} persons</ion-badge>
+        <ion-badge class="badge" color="primary">{{ recipe.recipe.calories | number: '1.0-0' }} kcal</ion-badge>
+      </ion-row>
+    </ion-col>
+  </ion-row>
+
+
   <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
-    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
+    <ion-infinite-scroll-content loadingSpinner="bubbles">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
 </ion-content>

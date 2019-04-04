@@ -14,6 +14,9 @@ import { SingleRecipePage } from '../pages/recipes/single-recipe/single-recipe';
 import { AuthPage } from '../pages/auth/auth';
 import { AuthService } from '../services/auth.service';
 import { FavoriteRecipesService } from '../services/favorite-recipes.service';
+import { BrowserHelper } from '../helpers/browser.helper';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { FavoritesPage } from '../pages/favorites/favorites';
 
 @NgModule({
   declarations: [
@@ -22,6 +25,7 @@ import { FavoriteRecipesService } from '../services/favorite-recipes.service';
     AuthPage,
     RecipesPage,
     SingleRecipePage,
+    FavoritesPage,
   ],
   imports: [
     BrowserModule,
@@ -35,15 +39,18 @@ import { FavoriteRecipesService } from '../services/favorite-recipes.service';
     AuthPage,
     RecipesPage,
     SingleRecipePage,
+    FavoritesPage,
   ],
   providers: [
     StatusBar,
     SplashScreen,
     HttpClient,
+    InAppBrowser,
     RecipesService,
     AuthService,
     FavoriteRecipesService,
     ToastHelper,
+    BrowserHelper,
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })

@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { NavParams, InfiniteScroll, NavController } from 'ionic-angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NavParams, InfiniteScroll, NavController, MenuController, Searchbar } from 'ionic-angular';
 import { Subscription } from 'rxjs/Subscription';
 import { RecipesService } from '../../services/recipes.service';
 import { ToastHelper } from '../../helpers/toast.helper';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SingleRecipePage } from './single-recipe/single-recipe';
 import { FavoriteRecipesService } from '../../services/favorite-recipes.service';
 
@@ -12,26 +11,27 @@ import { FavoriteRecipesService } from '../../services/favorite-recipes.service'
   templateUrl: 'recipes.html',
 })
 export class RecipesPage implements OnInit {
-
-  recipesLoading: Boolean = true;
-  recipes: any[];
+  recipesLoading: boolean;
+  recipes: any[] = [];
   recipesSubscription: Subscription;
-  recipeSearchForm: FormGroup;
+  recipeSearch: string;
   favoriteRecipes: any[] = [];
   favoriteRecipesSubscription: Subscription;
+  showSearchBar: boolean = false;
+
+  @ViewChild('searchbar') searchbar: Searchbar;
 
   constructor(
     private navParams: NavParams,
     private toastHelper: ToastHelper,
+    private menuCtrl: MenuController,
     private recipesService: RecipesService,
     private favoriteRecipesService: FavoriteRecipesService,
-    private formBuilder: FormBuilder,
     private navCtrl: NavController,
   ) { }
 
   ngOnInit() {
-    this.initForm();
-    this.recipeSearchForm.controls['recipeSearch'].setValue(this.navParams.get('recipeSearch'));
+    this.recipeSearch = this.navParams.get('recipeSearch');
     this.recipesSubscription = this.recipesService.recipes$.subscribe(
       (recipes: any[]) => {
         this.recipes = recipes
@@ -46,32 +46,42 @@ export class RecipesPage implements OnInit {
     )
     this.favoriteRecipesService.emitFavoriteRecipes();
     this.onLoadFavoriteRecipes();
+    this.searchbar.ionBlur.subscribe(() => {
+      this.showSearchBar = false;
+    })
+  }
+
+  onToggleMenu() {
+    this.menuCtrl.open();
+  }
+
+  onToggleSearchBar() {
+    this.showSearchBar = true;
+    this.searchbar.setFocus();
   }
 
   onLoadFavoriteRecipes() {
     this.favoriteRecipesService.getFavoriteRecipes();
   }
 
-  initForm() {
-    this.recipeSearchForm = this.formBuilder.group({
-      recipeSearch: ['', Validators.required]
-    })
-  }
-
-  onSubmitForm() {
+  onSubmitSearch() {
+    this.onToggleSearchBar();
     this.onLoadRecipes();
   }
 
   onLoadRecipes() {
-    this.recipesLoading = true;
-    this.recipesService.getRecipes(this.recipeSearchForm.get('recipeSearch').value)
-      .then(
-        () => {
+    if (this.recipeSearch && this.recipeSearch.length > 0) {
+      this.recipesLoading = true;
+      this.recipesService.getRecipes(this.recipeSearch)
+        .then(
+          () => {
+            this.recipesLoading = false;
+          })
+        .catch((error) => {
           this.recipesLoading = false;
-        })
-      .catch((error) => {
-        this.toastHelper.presentErrorToast(error)
-      });
+          this.toastHelper.presentErrorToast(error)
+        });
+    }
   }
 
   doInfinite(infiniteScroll: InfiniteScroll): Promise<any> {
@@ -86,14 +96,5 @@ export class RecipesPage implements OnInit {
 
   onClickRecipe(index: number) {
     this.navCtrl.push(SingleRecipePage, { index: index });
-  }
-
-  onClickFavorite(recipe: any) {
-    if (this.favoriteRecipes.indexOf({ id: recipe.uri, label: recipe.label }) !== -1) {
-      this.favoriteRecipesService.deleteFavoriteRecipe(recipe);
-    } else {
-      this.favoriteRecipesService.addFavoriteRecipe(recipe);
-    }
-    this.recipesService.updateFavorites();
   }
 }

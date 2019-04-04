@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
-import { MenuController, NavController } from 'ionic-angular';
+import { MenuController, NavController, LoadingController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -17,7 +17,8 @@ export class AuthPage implements OnInit {
         private authService: AuthService,
         private menuCtrl: MenuController,
         private formBuilder: FormBuilder,
-        private navCtrl: NavController
+        private navCtrl: NavController,
+        private loadingCtrl: LoadingController
     ) { }
 
     ngOnInit() {
@@ -41,24 +42,32 @@ export class AuthPage implements OnInit {
     }
 
     onSubmitForm() {
+        const loader = this.loadingCtrl.create({
+            content: "Please wait..."
+        });
+        loader.present();
         const email = this.authForm.get('email').value;
         const password = this.authForm.get('password').value;
         if (this.mode) {
             this.authService.signUpUser(email, password).then(
                 () => {
                     this.navCtrl.pop();
+                    loader.dismiss();
                 },
                 (error) => {
                     this.errorMessage = error;
+                    loader.dismiss();
                 }
             );
         } else if (!this.mode) {
             this.authService.signInUser(email, password).then(
                 () => {
                     this.navCtrl.pop();
+                    loader.dismiss();
                 },
                 (error) => {
                     this.errorMessage = error;
+                    loader.dismiss();
                 }
             );
         }

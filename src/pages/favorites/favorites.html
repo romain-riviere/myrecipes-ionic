@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-navbar>
+    <ion-buttons left>
+      <button ion-button icon-only (click)="onToggleMenu()">
+        <ion-icon name="menu"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title>My Favorites</ion-title>
+
+    <ion-buttons right>
+      <button ion-button icon-only (click)="onToggleSearchBar()" [disabled]="showSearchBar">
+        <ion-icon name="search"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+  <ion-searchbar #searchbar [ngClass]="{'searchBarVisible':showSearchBar, 'searchBarHidden':!showSearchBar}"
+    [(ngModel)]="recipeSearch" (ionInput)="onSubmitSearch()" autocomplete=true></ion-searchbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-row class="spinner-container">
+    <ion-spinner *ngIf="recipesLoading" name="bubbles"></ion-spinner>
+  </ion-row>
+
+  <ion-list>
+    <ion-item class="recipe" *ngFor="let recipe of filteredFavoriteRecipes; let i = index" (click)="onClickRecipe(i)">
+      {{ recipe.label }}
+    </ion-item>
+  </ion-list>
+</ion-content>
